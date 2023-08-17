@@ -61,6 +61,7 @@ function createMap(earthquakes) {
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
   });
 
+
   // Create a baseMaps object.
   let baseMaps = {
     "Street Map": street,
@@ -79,43 +80,41 @@ function createMap(earthquakes) {
     layers: [street, earthquakes]
   });
 
+  function getColor(d) {
+    return d > 9 ? "#ff5f65" :
+           d > 6  ? "#fca35d" :
+           d > 4  ? "#fdb72a" :
+           d > 2  ? "#f7db11" :
+           d > 1   ? "#dcf400" :
+           d > 0   ? "#a3f600" :
+                       '#FFEDA0';
+  }
+  let legend = L.control({
+      position: 'bottomright'
+  });
 
+  legend.onAdd = function (map) {
+  
+      let div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 1, 2, 4, 6, 9],
+        labels = ['<strong>&nbspLEGEND&nbsp</strong><br>&nbspIn Miles&nbsp'],
+        from, to;
 
-    // select the svg area
-    let SVG = d3.select("#my_dataviz3")
+      for (var i = 0; i < grades.length; i++) {
+          from = grades [i];
+          to = grades[i+1];
 
-    // create a list of keys
-    let keys = ["Mister A", "Brigitte", "Eleonore", "Another friend", "Batman"]
-
-    // Usually you have a color scale in your chart already
-    let color = d3.scaleOrdinal()
-        .domain(keys)
-        .range(d3.schemeSet1);
-
-    // Add one dot in the legend for each name.
-    let size = 20
-    SVG.selectAll("mydots")
-        .data(keys)
-        .enter()
-        .append("rect")
-            .attr("x", 100)
-            .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("width", size)
-            .attr("height", size)
-            .style("fill", function(d){ return color(d)})
-
-    // Add one dot in the legend for each name.
-    SVG.selectAll("mylabels")
-        .data(keys)
-        .enter()
-        .append("text")
-            .attr("x", 100 + size*1.2)
-            .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-            .style("fill", function(d){ return color(d)})
-            .text(function(d){ return d})
-            .attr("text-anchor", "left")
-            .style("alignment-baseline", "middle")
-
+      labels.push(
+          '<i style="background:' + getColor(from + 1) + '"></i> ' +
+           (to ? to : '+') + '&nbsp&ndash;&nbsp' + from);
+          }
+          div.innerHTML = labels.join('<br>');
+          return div;    
+  
+      // return div;
+  };
+  
+  legend.addTo(myMap);
 
   // Create a layer control.
   // Pass it our baseMaps and overlayMaps.

@@ -9,3 +9,6 @@ Code File Location:
   
 Program:
   1. Creates an Earthquake Visualization for the United States with circle markers with the size of the circle representing earthquake magnitude and color representing depth.
+
+![image](https://github.com/CharlesQuinn1/leaflet-challenge/assets/128498023/71fd0ec6-8311-48a7-8ed4-bfc2c9c292a2)
+
